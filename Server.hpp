@@ -1,4 +1,4 @@
-#include <WinSock2.h>
+#include <winsock2.h>
 
 using namespace std;
 
