@@ -43,7 +43,8 @@ int Server::init() {
 
     mServerAddr.sin_family = AF_INET;
     mServerAddr.sin_port = htons(mPort);
-    mServerAddr.sin_addr.s_addr = inet_addr(inet_ntoa(myAddress)); // inet_ntoa( MyAddress ) => ip de la machine
+    //mServerAddr.sin_addr.s_addr = inet_addr(inet_ntoa(myAddress)); // inet_ntoa( MyAddress ) => ip de la machine
+    mServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1"); // inet_ntoa( MyAddress ) => ip de la machine
 
     cout << "server correctement initialisé sur l'IP: " << inet_ntoa(myAddress) << endl;
     return 1;
@@ -109,15 +110,24 @@ void Server::stop() {
 DWORD Server::clientThread(SOCKET soc) {
     char buffer[50];
     cout << "thread client démarré" << endl;
-    int length = 0;
-    while ((length = recv(soc, buffer, 50, 0)) > 0) {
-        cout << "message reveived:" << endl;
+    int length = 1;
+    boolean endWhile = false;
+
+    while (length > 0) {
+        length = recv(soc, buffer, 50, 0);
+        cout << buffer[0] << endl;
+        if (buffer[0] == '0') {
+            break;
+        }
+        cout << "message reveived, length = " << length << endl;
         for (int i = 0; i < length; i++) {
             cout << buffer[i];
         }
         cout << endl;
     }
 
+    cout << "client socket closed";
+    closesocket(soc);
     return 0;
 }
 
