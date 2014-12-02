@@ -1,6 +1,7 @@
 /**
 * Main server class
 */
+#include "Server.hpp"
 
 Server::Server(int port) {
     this->port = port;
