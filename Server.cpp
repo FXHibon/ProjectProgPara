@@ -98,7 +98,7 @@ int Server::start() {
 
         cout << "client connecté ::  IP : " << inet_ntoa(ClientAddr.sin_addr) << " ,port = " << ntohs(ClientAddr.sin_port) << endl;
 
-        hProcessThread = CreateThread(NULL, 0, this->ThreadLauncher, &p, 0, NULL);
+        hProcessThread = CreateThread(NULL, 0, &Server::ThreadLauncher, &p, 0, NULL);
         if (hProcessThread == NULL) {
             cerr << "CreateThread a échoué avec l'erreur " << GetLastError() << endl;
         }
@@ -123,10 +123,4 @@ DWORD Server::ClientThread(SOCKET soc) {
 // return port litenning
 int Server::getPort() const {
     return port;
-}
-
-DWORD Server::ThreadLauncher(void *p) {
-    struct thread_param *Obj = reinterpret_cast<struct thread_param *>(p);
-    Server *s = Obj->ser;
-    return s->ClientThread(Obj->soc);
 }

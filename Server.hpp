@@ -20,7 +20,11 @@ public:
 
     Server(int i);
 
-    DWORD ThreadLauncher(void *p);
+    static DWORD WINAPI ThreadLauncher(void *p) {
+        struct thread_param *Obj = reinterpret_cast<struct thread_param *>(p);
+        Server *s = Obj->ser;
+        return s->ClientThread(Obj->soc);
+    }
 
     DWORD ClientThread(SOCKET soc);
 
