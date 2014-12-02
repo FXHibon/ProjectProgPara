@@ -1,12 +1,11 @@
 #include <iostream>
+#include "Server.cpp"
 
 using namespace std;
 
 int main() {
-    cout << "Welcome into our next generation game!" << endl;
-    cout << "This is awesome!";
-
-    int val;
-    cin >> val;
+    int port = 3000;
+    Server *s = new Server(port);
+    cout << s->getPort() << endl;
     return 0;
 }
