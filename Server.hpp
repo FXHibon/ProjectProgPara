@@ -20,13 +20,13 @@ public:
 
     Server(int i);
 
-    static DWORD WINAPI ThreadLauncher(void *p) {
+    static DWORD WINAPI threadLauncher(void *p) {
         struct thread_param *Obj = reinterpret_cast<struct thread_param *>(p);
         Server *s = Obj->ser;
-        return s->ClientThread(Obj->soc);
+        return s->clientThread(Obj->soc);
     }
 
-    DWORD ClientThread(SOCKET soc);
+    DWORD clientThread(SOCKET soc);
 
     struct thread_param {
         Server *ser;
@@ -34,8 +34,8 @@ public:
     };
 
 private:
-    int port;
-    SOCKET ListeningSocket;
-    bool running;
-    SOCKADDR_IN ServerAddr;
+    int mPort;
+    SOCKET mListeningSocket;
+    bool mRunning;
+    SOCKADDR_IN mServerAddr;
 };
