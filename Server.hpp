@@ -11,6 +11,8 @@ public:
 
     void stop();
 
+    int init();
+
     Server();
 
     Server(int i);
@@ -19,4 +21,5 @@ private:
     int port;
     SOCKET ListeningSocket;
     bool running;
+    SOCKADDR_IN ServerAddr;
 };
