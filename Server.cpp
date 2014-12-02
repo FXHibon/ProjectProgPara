@@ -115,7 +115,6 @@ DWORD Server::clientThread(SOCKET soc) {
 
     while (length > 0) {
         length = recv(soc, buffer, 50, 0);
-        cout << buffer[0] << endl;
         if (buffer[0] == '0') {
             break;
         }
@@ -123,10 +122,9 @@ DWORD Server::clientThread(SOCKET soc) {
         for (int i = 0; i < length; i++) {
             cout << buffer[i];
         }
-        cout << endl;
     }
 
-    cout << "client socket closed";
+    cout << "client socket closed" << endl;
     closesocket(soc);
     return 0;
 }
