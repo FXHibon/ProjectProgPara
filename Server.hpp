@@ -16,6 +16,8 @@ public:
 
     int init();
 
+    void sendMessage(SOCKET soc, string message);
+
     Server();
 
     Server(int i);

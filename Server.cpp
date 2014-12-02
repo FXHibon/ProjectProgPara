@@ -122,11 +122,17 @@ DWORD Server::clientThread(SOCKET soc) {
         for (int i = 0; i < length; i++) {
             cout << buffer[i];
         }
+        cout << "envoie message" << endl;
+        sendMessage(soc, "ok");
     }
 
     cout << "client socket closed" << endl;
     closesocket(soc);
     return 0;
+}
+
+void Server::sendMessage(SOCKET soc, string message) {
+    send(soc, message.c_str(), (int) strlen(message.c_str()), 0);
 }
 
 // return port litenning
