@@ -1,11 +1,13 @@
 // exception pour les erreurs serveur
+#include <stdexcept>
+#include <string>
 using namespace std;
 
-class ServerException : Exception {
+class ServerException : public exception {
 public:
-    ServerException(int errorCode, String message);
+    ServerException(int errorCode, string message);
 
-    String getMessage() const;
+    string getMessage() const;
 
     int getErrorCode() const;
 
@@ -13,5 +15,5 @@ public:
 
 private:
     int errorCode;
-    String message;
+    string message;
 };

@@ -9,6 +9,6 @@ int main() {
     Server *s = new Server(port);
     cout << s->getPort() << endl;
     s->init();
-
+    s->start();
     return 0;
 }
