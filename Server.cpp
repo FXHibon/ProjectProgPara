@@ -87,8 +87,8 @@ int Server::start() {
             WSACleanup();
             throw  new ServerException(6, "accept a échoué avec l'erreur " + WSAGetLastError());
         }
-        p.ser = this;
-        p.soc = newConnection;
+        p.server = this;
+        p.socket = newConnection;
 
         cout << "client connecté :  IP : " << inet_ntoa(clientAddr.sin_addr) << ", port = " << ntohs(clientAddr.sin_port) << endl;
 
@@ -123,6 +123,11 @@ DWORD Server::clientThread(SOCKET soc) {
 
     while (length > 0) {
         length = recv(soc, buffer, 50, 0);
+        if (length == -1) {
+            break;
+        } else if (length < 4) {
+            continue;
+        }
 
         string message = bufferToString(buffer, length);
 

@@ -16,7 +16,7 @@ public:
 
     int init();
 
-    void sendMessage(SOCKET soc, string message);
+    void sendMessage(SOCKET socket, string message);
 
     Server();
 
@@ -24,15 +24,15 @@ public:
 
     static DWORD WINAPI threadLauncher(void *p) {
         struct thread_param *Obj = reinterpret_cast<struct thread_param *>(p);
-        Server *s = Obj->ser;
-        return s->clientThread(Obj->soc);
+        Server *s = Obj->server;
+        return s->clientThread(Obj->socket);
     }
 
-    DWORD clientThread(SOCKET soc);
+    DWORD clientThread(SOCKET socket);
 
     struct thread_param {
-        Server *ser;
-        SOCKET soc;
+        Server *server;
+        SOCKET socket;
     };
 
 private:
