@@ -107,7 +107,15 @@ void Server::stop() {
     this->mRunning = false;
 }
 
+std::string bufferToString(char* buffer, int bufflen) {
+    std::string ret(buffer, bufflen);
+    return ret;
+}
+
 DWORD Server::clientThread(SOCKET soc) {
+    string pseudo = "";
+
+
     char buffer[50];
     cout << "thread client démarré" << endl;
     int length = 1;
@@ -115,15 +123,22 @@ DWORD Server::clientThread(SOCKET soc) {
 
     while (length > 0) {
         length = recv(soc, buffer, 50, 0);
-        if (buffer[0] == '0') {
+
+        string message = bufferToString(buffer, length);
+
+        string instr = message.substr(0, 4);
+        string data = message.substr(4, length - 4);
+
+        if (instr == "auth") {
+            pseudo = data;
+        } else if (instr == "mssg") {
+            string message = bufferToString(buffer, length);
+            cout << pseudo << " says : " << data << endl;
+        } else if (instr == "exit") {
             break;
         }
-        cout << "message reveived, length = " << length << endl;
-        for (int i = 0; i < length; i++) {
-            cout << buffer[i];
-        }
-        cout << "envoie message" << endl;
-        sendMessage(soc, "ok");
+
+        //sendMessage(soc, "ok");
     }
 
     cout << "client socket closed" << endl;
