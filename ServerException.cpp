@@ -1,5 +1,6 @@
 #include "ServerException.hpp"
 #include <string>
+
 // exception pour les erreurs serveur
 
 ServerException::ServerException(int errorCode, string message) {
