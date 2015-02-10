@@ -6,7 +6,6 @@
 #include <iostream>
 #include "ServerException.hpp"
 
-
 using namespace std;
 
 class Server;
@@ -31,6 +30,10 @@ public:
     int getClientID();
 
     string getPseudo();
+    bool isAuthenticated();
+
+    void kick(string message);
+
 
 private:
 
@@ -47,6 +50,7 @@ private:
     ClientState handleHello(string instr, string data);
 
     ClientState handleNice2MeetYou(string instr, string data);
+
 };
 
 #endif

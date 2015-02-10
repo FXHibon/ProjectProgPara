@@ -1,5 +1,6 @@
 #ifndef _SERVER
 #define _SERVER
+
 #include <winsock2.h>
 #include <windef.h>
 #include <iostream>
@@ -8,11 +9,18 @@
 
 using namespace std;
 
+enum ServerState {
+    WAITING_FOR_PLAYERS,
+    PLAYING,
+    END
+};
+
 class Server {
 
 public:
 
     Server();
+
     Server(int i);
 
     struct thread_param {
@@ -21,12 +29,15 @@ public:
     };
 
     int init();
+
     int start();
+
     void stop();
 
     int getPort() const;
 
     void notifyToAll(string message);
+    void kickNotAuthenticatedUsers();
 
 private:
     int mPort;
@@ -34,8 +45,11 @@ private:
     bool mRunning;
     SOCKADDR_IN mServerAddr;
 
+    ServerState state;
+
     int curClientID = 0;
     std::map<int, ClientThread> clientThreads;
+
     static DWORD WINAPI threadLauncher(void *p) {
         struct thread_param *Obj = reinterpret_cast<struct thread_param *>(p);
         Server *s = Obj->server;
@@ -54,5 +68,7 @@ private:
 
         return result;
     }
+
 };
+
 #endif

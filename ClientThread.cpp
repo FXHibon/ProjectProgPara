@@ -1,6 +1,6 @@
 #include <winsock2.h>
 #include <iostream>
-#include "ServerException.hpp"
+#include <future>
 #include "Server.hpp"
 
 using namespace std;
@@ -18,16 +18,14 @@ ClientThread::ClientThread(int clientID, SOCKET socket, Server *server) {
 
 DWORD ClientThread::run() {
     char buffer[50];
-    bool activeClient = true;
 
     cout << "thread client démarré" << endl;
 
     int length = 1;
-    bool endWhile = false;
 
-    this->sendMessage("hello");
+    this->sendMessage("helo");
 
-    while (activeClient) {
+    while (this->state != ClientState::BYE) {
         length = recv(this->socket, buffer, 50, 0);
 
         if (length == -1) {
@@ -54,10 +52,6 @@ DWORD ClientThread::run() {
             case ClientState::NICE_2_MEET_YOU:
                 this->state = this->handleNice2MeetYou(instr, data);
                 break;
-
-            case ClientState::BYE:
-                activeClient = false;
-                break;
         }
 
     }
@@ -65,6 +59,12 @@ DWORD ClientThread::run() {
     cout << "client socket closed" << endl;
     closesocket(this->socket);
     return 0;
+}
+
+void ClientThread::kick(string message) {
+    this->state = ClientState::BYE;
+    this->sendMessage("exit" + message);
+    closesocket(this->socket);
 }
 
 void ClientThread::sendMessage(string message) {
@@ -84,10 +84,14 @@ string ClientThread::getPseudo() {
     return this->pseudo;
 }
 
+bool ClientThread::isAuthenticated() {
+    return this->pseudo.length() != 0;
+}
+
 ClientState ClientThread::handleHello(string instr, string data) {
     if (instr == "auth") {
 
-        if (data.length() >= 1) {
+        if (data.length() >= 3) {
 
             this->pseudo = data;
             this->server->notifyToAll(this->pseudo + " connected !");
@@ -97,12 +101,14 @@ ClientState ClientThread::handleHello(string instr, string data) {
             this->sendMessage("ntmy");
 
             return ClientState::NICE_2_MEET_YOU;
-
-
+        } else {
+            this->sendMessage("argh");
         }
 
+    } else {
+        this->sendMessage("wut?");
     }
-    this->sendMessage("argh");
+
     return this->state;
 }
 
@@ -113,8 +119,12 @@ ClientState ClientThread::handleNice2MeetYou(string instr, string data) {
 
         this->server->notifyToAll(this->pseudo + " says : " + data);
 
-    }
+    } else if (instr == "kick") {
 
-    this->sendMessage("argh");
+        this->server->kickNotAuthenticatedUsers();
+
+    } else {
+        this->sendMessage("wut?");
+    }
     return this->state;
 }
