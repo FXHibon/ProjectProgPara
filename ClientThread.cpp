@@ -26,7 +26,7 @@ DWORD ClientThread::run() {
 
     while (true) {
         length = recv(this->socket, buffer, 50, 0);
-        cout << length << endl;
+
         if (length == -1) {
             cout << "error: " << WSAGetLastError() << endl;
             break;
@@ -35,18 +35,28 @@ DWORD ClientThread::run() {
         }
 
         string message = bufferToString(buffer, length);
-        cout << message << endl;
+
         string instr = message.substr(0, 4);
         string data = message.substr(4, length - 4);
-        cout << instr << endl;
+
+
         if (instr == "auth") {
+
             this->pseudo = data;
+            this->server->notifyToAll(this->pseudo + " connected !");
+
+            cout << this->pseudo << " connected " << endl;
+
         } else if (instr == "mssg") {
+
             string message = bufferToString(buffer, length);
             cout << this->pseudo << " says : " << data << endl;
             this->server->notifyToAll(this->pseudo + " says : " + data);
+
         } else if (instr == "exit") {
+
             break;
+
         }
     }
 
@@ -66,4 +76,8 @@ std::string ClientThread::bufferToString(char* buffer, int bufflen) {
 
 int ClientThread::getClientID() {
     return this->clientID;
+}
+
+string ClientThread::getPseudo() {
+    return this->pseudo;
 }

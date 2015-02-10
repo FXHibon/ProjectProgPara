@@ -46,13 +46,11 @@ private:
         cout << "client ID : " << s->curClientID << endl;
         s->curClientID++;
 
-        s->notifyToAll("Someone connected !");
-
         DWORD result = thread.run();
 
         s->clientThreads.erase(thread.getClientID());
 
-        s->notifyToAll("Someone disconnected !");
+        s->notifyToAll(thread.getPseudo() + " disconnected !");
 
         return result;
     }

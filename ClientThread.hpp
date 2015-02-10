@@ -20,6 +20,7 @@ public:
     DWORD run();
 
     int getClientID();
+    string getPseudo();
 private:
     int clientID;
     SOCKET socket;
