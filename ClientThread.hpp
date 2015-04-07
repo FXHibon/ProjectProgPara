@@ -24,6 +24,7 @@ public:
     ClientThread(int clientID, SOCKET socket, Server *server);
 
     void sendMessage(string message);
+    void sendMessageTo(string pseudo, string message);
 
     DWORD run();
 

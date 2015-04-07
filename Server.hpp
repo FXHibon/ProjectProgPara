@@ -37,6 +37,7 @@ public:
     int getPort() const;
 
     void notifyToAll(string message);
+    void notifyTo(string pseudo, string message);
     void kickNotAuthenticatedUsers();
 
 private:

@@ -36,6 +36,7 @@ DWORD ClientThread::run() {
         }
 
         string message = bufferToString(buffer, length);
+        cout << "receiving: " << message << endl;
 
         string instr = message.substr(0, 4);
         string data = message.substr(4, length - 4);
@@ -69,6 +70,13 @@ void ClientThread::kick(string message) {
 
 void ClientThread::sendMessage(string message) {
     send(this->socket, message.c_str(), (int) strlen(message.c_str()), 0);
+}
+
+void ClientThread::sendMessageTo(string pseudo2, string message) {
+    cout << "ClientThread::sendMessageTo: this->pseudo = " << this->pseudo << endl;
+    if (this->pseudo == pseudo2) {
+        send(this->socket, message.c_str(), (int) strlen(message.c_str()), 0);
+    }
 }
 
 std::string ClientThread::bufferToString(char *buffer, int bufflen) {
@@ -113,11 +121,16 @@ ClientState ClientThread::handleHello(string instr, string data) {
 }
 
 ClientState ClientThread::handleNice2MeetYou(string instr, string data) {
+    cout << this->pseudo << " => instr = " << instr << ", data = " << data << endl;
     if (instr == "mssg") {
 
-        cout << this->pseudo << " says : " << data << endl;
-
         this->server->notifyToAll(this->pseudo + " says : " + data);
+
+    } else if (instr == "mgto") {
+        string receiver = data.substr(0, data.find(":"));
+        string msg = data.substr(data.find(":"), data.length() - 1);
+        this->server->notifyTo(receiver, msg);
+        cout << this->pseudo << " says " << msg << " to " << receiver << endl;
 
     } else if (instr == "kick") {
 

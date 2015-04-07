@@ -130,8 +130,15 @@ int Server::getPort() const {
 void Server::notifyToAll(string message) {
     for (const auto &kv : this->clientThreads) {
         ClientThread thread = (ClientThread) kv.second;
-        cout << "notify " << (int) kv.first << " !" << endl;
+        //cout << "notify " << (int) kv.first << " !" << endl;
         thread.sendMessage(message);
+    }
+}
+
+void Server::notifyTo(string pseudo, string message) {
+    for (const auto &kv : this->clientThreads) {
+        ClientThread thread = (ClientThread) kv.second;
+        thread.sendMessageTo(pseudo, message);
     }
 }
 
